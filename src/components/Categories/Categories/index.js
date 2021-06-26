@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import CategoryNavigation from '../CategoryNavigation';
-import Pet from '../../Pet';
+import PetCard from '../../PetCard'
 import * as petsService from '../../../services/petsService'
 
 class Categories extends Component {
@@ -14,7 +14,9 @@ class Categories extends Component {
     componentDidMount() {
         petsService.getAll()
             .then(res => this.setState({ pets: res }))
+
     }
+   
     componentDidUpdate(prevProps) {
         const category = this.props.match.params.category
         if (prevProps.match.params.category === category) {
@@ -27,12 +29,13 @@ class Categories extends Component {
              }))
     }
     render() {
+   
         return (
             <section className="dashboard">
                 <h1>Dashboard</h1>
                 <CategoryNavigation />
                 <ul className="other-pets-list">
-                    {this.state.pets.map(x => <Pet key={x.id} {...x} />)}
+                    {this.state.pets.map(x => (<PetCard key={x.id} {...x}/>))}
                 </ul>
             </section>
         )
