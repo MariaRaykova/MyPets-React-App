@@ -3,6 +3,7 @@ import './app.scss';
 import './utils/firebase'
 import firebaseApp from './utils/firebase'
 import { useEffect, useState } from 'react';
+import AuthContext from './contexts/AuthContext'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Categories from './components/Categories/Categories'
@@ -14,7 +15,7 @@ import Register from './components/Register'
 
 
 function App() {
-  const[user, setUser] = useState(null); //липсващ user 
+  const [user, setUser] = useState(null); //липсващ user 
   useEffect(() => {
     firebaseApp.auth().onAuthStateChanged((authUser) => {
       if (authUser) {
@@ -28,11 +29,13 @@ function App() {
     isAuthenticated: Boolean(user),
     username: user?.email,
   }
-    return (
-      <div className="container">
+  return (
+    <div className="container">
+      {/* всичко да има достъп до контекста value user или authInfo направо и го махаме от всеки Route */}
+      <AuthContext.Provider value={authInfo}>
         <Header {...authInfo} />
         <Switch>
-          <Route path="/" exact component={Categories}/> 
+          <Route path="/" exact component={Categories} />
           {/* за да отваря страницата ако има филтрирана категория */}
           <Route path="/categories/:category" component={Categories} />
           <Route path="/pets/details/:petId" component={PetDetails} />
@@ -45,12 +48,11 @@ function App() {
               firebaseApp.auth().signOut();
               return <Redirect to='/' />
             }} />
-
         </Switch>
-
         <Footer />
-      </div>
-    );
-  }
+      </ AuthContext.Provider>
+    </div>
+  );
+}
 
 export default App
